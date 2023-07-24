@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\API.ProviderOne\API.ProviderOne.csproj" />
+    <ProjectReference Include="..\API.ProviderOne\TaskSolution.API.Providers.ProviderOne.csproj" />
   </ItemGroup>
 
 </Project>

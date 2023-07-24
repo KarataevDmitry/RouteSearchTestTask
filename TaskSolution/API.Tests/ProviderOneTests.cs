@@ -32,7 +32,7 @@ namespace TaskSolution.Tests.API.ProviderOne
         [TestMethod]
         public void GetAllRoutesTest()
         {
-            var r = new RouteService()
+            
         }
     }
 }

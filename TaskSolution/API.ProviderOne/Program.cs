@@ -1,8 +1,14 @@
 
 using Asp.Versioning;
 
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
 
+using TaskSolution.DAL.Data;
+using TaskSolution.DAL.Interfaces;
+using TaskSolution.DAL.Repositories;
+
+var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -11,7 +17,10 @@ builder.Services.AddApiVersioning(opt => {
     opt.ApiVersionReader = new QueryStringApiVersionReader("v");
 });
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<ITravelRouteRepository, TravelRouteRepository>();
+builder.Services.AddScoped<ITravelPointRepository, TravelPointRepository>();
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

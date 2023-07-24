@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TaskSolution.DAL.Entities
+namespace TaskSolution.DAL.Interfaces
 {
-    internal class TravelRoute
+    public interface ITravelRouteRepository
     {
     }
 }
