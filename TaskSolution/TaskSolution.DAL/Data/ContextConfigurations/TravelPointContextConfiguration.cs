@@ -11,36 +11,36 @@ using TaskSolution.DAL.Models;
 
 namespace TaskSolution.DAL.Data.ContextConfigurations
 {
-    internal class TravelPointContextConfiguration : IEntityTypeConfiguration<TravelPoint>
+    public class TravelPointContextConfiguration : IEntityTypeConfiguration<TravelPoint>
     {
-        private Guid[] _routesIds;
-        public TravelPointContextConfiguration(Guid[] routesIds) { _routesIds = routesIds; }
+        private Guid[] _travelPointsIds;
+        public TravelPointContextConfiguration(Guid[] routesIds) { _travelPointsIds = routesIds; }
         public void Configure(EntityTypeBuilder<TravelPoint> builder)
         {
             builder.HasData(
                 new TravelPoint
                 {
-                    Id = Guid.NewGuid(),
+                    Id = _travelPointsIds[0],
                     Name = "Alabama",
-                    TravelRouteId = _routesIds[0]
+                    TravelRouteId = _travelPointsIds[0]
                 },
                 new TravelPoint
                 {
-                    Id = Guid.NewGuid(),
+                    Id = _travelPointsIds[1],
                     Name = "San-Francisco",
-                    TravelRouteId = _routesIds[0]
+                    TravelRouteId = _travelPointsIds[0]
                 },
                 new TravelPoint
                 {
-                    Id = Guid.NewGuid(),
+                    Id = _travelPointsIds[2],
                     Name = "Washington",
-                    TravelRouteId = _routesIds[1]
+                    TravelRouteId = _travelPointsIds[1]
                 },
                 new TravelPoint
                 {
-                    Id = Guid.NewGuid() ,
+                    Id = _travelPointsIds[3] ,
                     Name = "Ohaio",
-                    TravelRouteId= _routesIds[0]
+                    TravelRouteId= _travelPointsIds[0]
                 }
 
                 ) ;

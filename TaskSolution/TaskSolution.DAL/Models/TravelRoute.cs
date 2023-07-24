@@ -12,16 +12,17 @@ namespace TaskSolution.DAL.Models
     {
         [Key]
         public Guid Id { get; set; }
+        [ForeignKey(nameof(StartPointId))]
         public TravelPoint StartPoint { get; set; }
-        [ForeignKey("StartPointId")]
+        
         public Guid StartPointId { get; set; }
+        [ForeignKey(nameof(EndPointId))]
         public TravelPoint EndPoint { get; set; }
-        [ForeignKey("EndPointId")]
-        public Guid EndPointId { get; set; }
+        public Guid? EndPointId { get; set; }
         //public ICollection<TravelPoint> RoutePoints { get; set; }
         public DateTime StartDateTimeUTC { get; set; }
         public DateTime ArrivalDateTimeUTC { get; set; }
         public TimeSpan TimeToLive { get; set; }
-        public decimal Cost { get; set; }
+        public int Cost { get; set; }
     }
 }

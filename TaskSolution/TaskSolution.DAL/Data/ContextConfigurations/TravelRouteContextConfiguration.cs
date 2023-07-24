@@ -11,7 +11,7 @@ using TaskSolution.DAL.Models;
 
 namespace TaskSolution.DAL.Data.ContextConfigurations
 {
-    internal class TravelRouteContextConfiguration : IEntityTypeConfiguration<TravelRoute>
+    public class TravelRouteContextConfiguration : IEntityTypeConfiguration<TravelRoute>
     {
         private Guid[] _travelPointIds;
         public TravelRouteContextConfiguration(Guid[] travelPointIds) { _travelPointIds = travelPointIds; }

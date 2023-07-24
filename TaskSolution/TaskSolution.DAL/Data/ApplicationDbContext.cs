@@ -7,6 +7,11 @@ namespace TaskSolution.DAL.Data
 {
     public class ApplicationDbContext : DbContext
     {
+        public ApplicationDbContext()
+        {
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
+        }
         public DbSet<TravelRoute> TravelRoutes { get; set; }
         public DbSet<TravelPoint> TravelPoints { get; set; }
         public ApplicationDbContext(DbContextOptions options):base(options)
@@ -15,7 +20,7 @@ namespace TaskSolution.DAL.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var ids= new Guid[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
+            var ids= new Guid[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
             modelBuilder.ApplyConfiguration(new TravelPointContextConfiguration(ids));
             modelBuilder.ApplyConfiguration(new TravelRouteContextConfiguration(ids));
         }
