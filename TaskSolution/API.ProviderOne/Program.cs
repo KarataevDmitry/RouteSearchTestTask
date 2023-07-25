@@ -24,7 +24,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     options => 
     options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
 builder.Services.AddGraphQLServer()
-    .AddQueryType<Query>().AddProjections().AddFiltering().AddSorting();
+    .AddQueryType<Query>().AddProjections().AddFiltering().AddSorting()
+    .AddMutationType<Mutation>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
