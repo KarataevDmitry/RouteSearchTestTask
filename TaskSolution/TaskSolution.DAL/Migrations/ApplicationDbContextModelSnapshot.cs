@@ -22,24 +22,6 @@ namespace TaskSolution.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TaskSolution.DAL.Models.TravelPoint", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("TravelRouteId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TravelPoints");
-                });
-
             modelBuilder.Entity("TaskSolution.DAL.Models.TravelRoute", b =>
                 {
                     b.Property<Guid>("Id")
@@ -52,42 +34,23 @@ namespace TaskSolution.DAL.Migrations
                     b.Property<int>("Cost")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("EndPointId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("EndPoint")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartDateTimeUTC")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("StartPointId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("StartPoint")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("TimeToLive")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EndPointId");
-
-                    b.HasIndex("StartPointId");
-
                     b.ToTable("TravelRoutes");
-                });
-
-            modelBuilder.Entity("TaskSolution.DAL.Models.TravelRoute", b =>
-                {
-                    b.HasOne("TaskSolution.DAL.Models.TravelPoint", "EndPoint")
-                        .WithMany()
-                        .HasForeignKey("EndPointId");
-
-                    b.HasOne("TaskSolution.DAL.Models.TravelPoint", "StartPoint")
-                        .WithMany()
-                        .HasForeignKey("StartPointId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("EndPoint");
-
-                    b.Navigation("StartPoint");
                 });
 #pragma warning restore 612, 618
         }

@@ -17,19 +17,13 @@ namespace TaskSolution.DAL.Data
             UseFiltering
         ]
         public DbSet<TravelRoute> TravelRoutes { get; set; }
-        [
-            UseSorting,
-            UseFiltering
-        ]
-        public DbSet<TravelPoint> TravelPoints { get; set; }
+        
         public ApplicationDbContext(DbContextOptions options):base(options)
         {
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var ids= new Guid[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
-            modelBuilder.ApplyConfiguration(new TravelPointContextConfiguration(ids));
-            modelBuilder.ApplyConfiguration(new TravelRouteContextConfiguration(ids));
+            modelBuilder.ApplyConfiguration(new TravelRouteContextConfiguration());
         }
     }
 }

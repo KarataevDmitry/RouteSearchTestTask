@@ -16,12 +16,6 @@ namespace TaskSolution.DAL.Data
              UseFiltering,
              UseSorting
         ]
-        public IQueryable<TravelPoint> GetTravelPoints([Service]ApplicationDbContext context) => context.TravelPoints;
-        [
-             UseProjection,
-             UseFiltering,
-             UseSorting
-        ]
         public IQueryable<TravelRoute> GetTravelRoutes([Service] ApplicationDbContext context) => context.TravelRoutes;
     }
 }

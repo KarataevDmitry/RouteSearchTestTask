@@ -13,8 +13,6 @@ namespace TaskSolution.DAL.Data.ContextConfigurations
 {
     public class TravelRouteContextConfiguration : IEntityTypeConfiguration<TravelRoute>
     {
-        private Guid[] _travelPointIds;
-        public TravelRouteContextConfiguration(Guid[] travelPointIds) { _travelPointIds = travelPointIds; }
         public void Configure(EntityTypeBuilder<TravelRoute> builder)
         {
             builder.Property(e => e.TimeToLive)
