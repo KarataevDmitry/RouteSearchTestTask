@@ -11,13 +11,17 @@ namespace TaskSolution.DAL.Data
 {
     public class Query
     {
-        [UseProjection]
-        [UseFiltering]
-        [UseSorting]
+        [
+             UseProjection,
+             UseFiltering,
+             UseSorting
+        ]
         public IQueryable<TravelPoint> GetTravelPoints([Service]ApplicationDbContext context) => context.TravelPoints;
-        [UseProjection]
-        [UseFiltering]
-        [UseSorting]
+        [
+             UseProjection,
+             UseFiltering,
+             UseSorting
+        ]
         public IQueryable<TravelRoute> GetTravelRoutes([Service] ApplicationDbContext context) => context.TravelRoutes;
     }
 }

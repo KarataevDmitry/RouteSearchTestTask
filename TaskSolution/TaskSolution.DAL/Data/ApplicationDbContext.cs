@@ -12,11 +12,18 @@ namespace TaskSolution.DAL.Data
             Database.EnsureDeleted();
             Database.EnsureCreated();
         }
+        [
+            UseSorting,
+            UseFiltering
+        ]
         public DbSet<TravelRoute> TravelRoutes { get; set; }
+        [
+            UseSorting,
+            UseFiltering
+        ]
         public DbSet<TravelPoint> TravelPoints { get; set; }
         public ApplicationDbContext(DbContextOptions options):base(options)
         {
-            
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
