@@ -7,7 +7,7 @@ using TaskSolution.DAL.Models;
 namespace TaskSolution.DAL.Data;
 public class Mutation
 {
-    public async Task<TravelRoute> TravelRoute([Service] ApplicationDbContext dbContext,
+    public async Task<TravelRoute> AddTravelRoute([Service] ApplicationDbContext dbContext,
                                                string startPointName,
                                                string endPointName,
                                                DateTime startDateTimeUTC,

@@ -1,0 +1,12 @@
+﻿query GetTravelRoutes
+{
+	travelRoutes
+	{
+		startPoint
+		endPoint
+		startDateTimeUTC
+		arrivalDateTimeUTC
+		timeToLive
+		cost
+	}
+}

@@ -1,0 +1,132 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  travelRoutes(where: TravelRouteFilterInput order: [TravelRouteSortInput!]): [TravelRoute!]!
+}
+
+type Mutation {
+  addTravelRoute(startPointName: String! endPointName: String! startDateTimeUTC: DateTime! arrivalDateTimeUTC: DateTime! timeToLive: TimeSpan! cost: Int!): TravelRoute!
+}
+
+input TravelRouteFilterInput {
+  and: [TravelRouteFilterInput!]
+  or: [TravelRouteFilterInput!]
+  id: UuidOperationFilterInput
+  startPoint: StringOperationFilterInput
+  endPoint: StringOperationFilterInput
+  startDateTimeUTC: DateTimeOperationFilterInput
+  arrivalDateTimeUTC: DateTimeOperationFilterInput
+  timeToLive: TimeSpanOperationFilterInput
+  cost: IntOperationFilterInput
+}
+
+input TravelRouteSortInput {
+  id: SortEnumType
+  startPoint: SortEnumType
+  endPoint: SortEnumType
+  startDateTimeUTC: SortEnumType
+  arrivalDateTimeUTC: SortEnumType
+  timeToLive: SortEnumType
+  cost: SortEnumType
+}
+
+input UuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID]
+  nin: [UUID]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input DateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input TimeSpanOperationFilterInput {
+  eq: TimeSpan
+  neq: TimeSpan
+  in: [TimeSpan]
+  nin: [TimeSpan]
+  gt: TimeSpan
+  ngt: TimeSpan
+  gte: TimeSpan
+  ngte: TimeSpan
+  lt: TimeSpan
+  nlt: TimeSpan
+  lte: TimeSpan
+  nlte: TimeSpan
+}
+
+input IntOperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int]
+  nin: [Int]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+scalar UUID
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+"The `TimeSpan` scalar represents an ISO-8601 compliant duration type."
+scalar TimeSpan
+
+type TravelRoute {
+  id: UUID!
+  startPoint: String!
+  endPoint: String!
+  startDateTimeUTC: DateTime!
+  arrivalDateTimeUTC: DateTime!
+  timeToLive: TimeSpan!
+  cost: Int!
+}
