@@ -1,5 +1,0 @@
-﻿mutation CreateCake($newCake:TravelRoute!){
-  saveTravelRoute(newTravelRoute:$newCake) {
-    id
-  }
-}
