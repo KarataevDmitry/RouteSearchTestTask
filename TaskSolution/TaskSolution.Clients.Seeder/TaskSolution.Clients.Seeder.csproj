@@ -7,14 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.Abstractions" Version="13.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.9" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="StrawberryShake" Version="13.4.0" />
-    <PackageReference Include="StrawberryShake.CodeGeneration.CSharp.Analyzers" Version="12.21.0" />
-    <PackageReference Include="StrawberryShake.Server" Version="13.4.0" />
-    <PackageReference Include="StrawberryShake.Transport.Http" Version="13.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 

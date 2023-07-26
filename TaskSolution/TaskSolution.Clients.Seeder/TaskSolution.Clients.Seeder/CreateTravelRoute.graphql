@@ -1,5 +1,0 @@
-﻿mutation CreateTravelRoute($startPointName: String! $endPointName: String! $startDateTimeUTC: DateTime! $arrivalDateTimeUTC: DateTime! $timeToLive: TimeSpan! $cost: Int! ){
-  addTravelRoute(startPointName:$startPointName, endPointName:$endPointName, startDateTimeUTC:$startDateTimeUTC, arrivalDateTimeUTC:$arrivalDateTimeUTC, timeToLive:$timeToLive, cost:$cost) {
-    id
-  }
-}
