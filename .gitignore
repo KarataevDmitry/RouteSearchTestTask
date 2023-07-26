@@ -396,3 +396,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/TaskSolution/TaskSolution.Clients.Seeder/TaskSolution.Clients.Seeder/Generated/ProviderOneClient.StrawberryShake.cs
