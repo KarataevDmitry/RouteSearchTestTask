@@ -26,6 +26,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 builder.Services.AddGraphQLServer()
     .AddQueryType<Query>().AddProjections().AddFiltering().AddSorting()
     .AddMutationType<Mutation>();
+builder.WebHost.UseUrls("http://localhost:4883");
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -40,10 +41,6 @@ app.UseHttpsRedirection();
 app.MapGraphQL("/graphql");
 app.Run();
 
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
 /// <summary>
 /// This added for only for testing purposes
 /// </summary>

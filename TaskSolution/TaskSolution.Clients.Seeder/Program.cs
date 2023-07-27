@@ -1,8 +1,9 @@
 
 
 
-using System.Runtime.CompilerServices;
+using Bogus;
 
+using TaskSolution.Clients.Seeder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //builder.Services.AddProviderOneClient(StrawberryShake.ExecutionStrategy.CacheFirst)
-    //.ConfigureHttpClient(_ => _.BaseAddress = new Uri("http://localhost:5000/graphql"));
+//.ConfigureHttpClient(_ => _.BaseAddress = new Uri("http://localhost:5000/graphql"));
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -22,17 +23,44 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//async Task CreateRoute([Service] IProviderOneClient client, 
-//                                    string startPointName,
-//                                               string endPointName,
-//                                               DateTime startDateTimeUTC,
-//                                               DateTime arrivalDateTimeUTC,
-//                                               TimeSpan timeToLive,
-//                                               int cost)
-//{
-//    var tr = await client.CreateTravelRoute.ExecuteAsync(startPointName, endPointName, startDateTimeUTC, arrivalDateTimeUTC, timeToLive, cost);
-//}
-//var c = app.Services.GetRequiredService<IProviderOneClient>();
-//await CreateRoute(c, "Alabama", "New York", new DateTime(2023, 12, 5, 3, 15, 15).ToUniversalTime(), new DateTime(2023, 12, 5, 3, 15, 15).ToUniversalTime(), TimeSpan.FromMinutes(15), 999);
+await Seed(new Uri("http://localhost:2292/graphql"));
 app.Run();
 
+static async Task CreateRouteInProviderOne(Uri uri, string startPointName, string endPointName, DateTime startTime, DateTime arrivalTime, TimeSpan timeToLive, int cost)
+{
+    using var httpClient = new HttpClient();
+    httpClient.BaseAddress = uri;
+    using var client = new ProviderOneZeroQLClient(httpClient);
+    var st = startTime;
+    var at = arrivalTime;
+    var ttl = timeToLive;
+    var c = cost;
+    var response = await client.Mutation(o => o.AddTravelRoute<TravelRoute>(
+        startPointName: startPointName,
+        endPointName: endPointName,
+        startDateTimeUTC: st,
+        arrivalDateTimeUTC: at,
+        timeToLive: ttl,
+        cost: c,
+        p => new TravelRoute() { Id = p.Id }));
+}
+
+static async Task Seed(Uri uri)
+{
+    Console.WriteLine("Seeding started: Provider One");
+    for (int i = 0; i < 3000; i++)
+    {
+        Console.WriteLine("Seed entry");
+        var faker = new Faker("en");
+        var arrt = faker.Date.Between(new DateTime(2022, 01, 01), new DateTime(2023, 01, 01));
+        var stpn = faker.Address.City();
+        var epn = faker.Address.City();
+        var sd = faker.Date.Between(new DateTime(2022, 01, 01), new DateTime(2023, 01, 01));
+        var endd = faker.Date.Between(sd, sd.AddYears(1));
+        var ttl = faker.Date.Timespan();
+        var cost = faker.Random.Number(500);
+        await CreateRouteInProviderOne(uri,stpn, epn, sd, arrt, ttl, cost);
+        Console.WriteLine("Seed entry send");
+    }
+    Console.WriteLine("Seed Provider One Complete");
+}

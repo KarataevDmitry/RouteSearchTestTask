@@ -1,12 +1,3 @@
 {
-  "projects": [
-    {
-      "schema": [
-        "TaskSolution.Clients.Seeder/TaskSolution.Clients.Seeder/schema.graphql"
-      ],
-      "documents": [
-        "TaskSolution.Clients.Seeder/TaskSolution.Clients.Seeder/**/*.graphql"
-      ]
-    }
-  ]
+  "projects": []
 }
