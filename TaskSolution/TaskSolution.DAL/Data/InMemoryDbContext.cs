@@ -6,11 +6,12 @@ using TaskSolution.DAL.Models;
 
 namespace TaskSolution.DAL.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class InMemoryDbContext : DbContext
     {
-        public ApplicationDbContext()
+        public InMemoryDbContext()
         {
             Database.EnsureCreated();
+            
         }
         [
             UseSorting,
@@ -18,15 +19,21 @@ namespace TaskSolution.DAL.Data
         ]
         public DbSet<TravelRoute> TravelRoutes { get; set; }
         
-        public ApplicationDbContext(DbContextOptions options):base(options)
+        public InMemoryDbContext(DbContextOptions options):base(options)
         {
+            
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            base.OnModelCreating(modelBuilder);
-        
-            modelBuilder.ApplyConfiguration(new TravelRouteContextConfiguration());
-            
+            modelBuilder.Entity<TravelRoute>().Property(e => e.TimeToLive)
+                .HasConversion<long>();
+
+
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
         }
     }
 }

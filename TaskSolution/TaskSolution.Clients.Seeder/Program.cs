@@ -23,13 +23,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-await Seed(new Uri("http://localhost:2292/graphql"));
+//await Seed(new Uri("http://localhost:2292/graphql"));
 app.Run();
 
 static async Task CreateRouteInProviderOne(Uri uri, string startPointName, string endPointName, DateTime startTime, DateTime arrivalTime, TimeSpan timeToLive, int cost)
 {
-    using var httpClient = new HttpClient();
-    httpClient.BaseAddress = uri;
+    using var httpClient = new HttpClient() { BaseAddress = uri };
     using var client = new ProviderOneZeroQLClient(httpClient);
     var st = startTime;
     var at = arrivalTime;

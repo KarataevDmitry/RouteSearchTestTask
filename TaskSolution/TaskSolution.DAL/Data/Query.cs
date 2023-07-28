@@ -17,5 +17,6 @@ namespace TaskSolution.DAL.Data
              UseSorting
         ]
         public IQueryable<TravelRoute> GetTravelRoutes([Service] ApplicationDbContext context) => context.TravelRoutes;
+        
     }
 }
