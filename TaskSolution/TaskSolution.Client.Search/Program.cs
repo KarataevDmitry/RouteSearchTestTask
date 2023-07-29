@@ -21,7 +21,7 @@ builder.Services.AddApiVersioning(opt => {
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ITravelRouteRepository, TravelRouteRepository>();
-builder.Services.AddScoped<ITravelPointRepository, TravelPointRepository>();
+builder.Services.AddScoped<MemoryCache>
 var cacheOptions = new MemoryCacheOptions()
 {
     ExpirationScanFrequency = TimeSpan.FromSeconds(60),

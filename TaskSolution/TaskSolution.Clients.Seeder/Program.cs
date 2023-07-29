@@ -26,7 +26,7 @@ app.UseHttpsRedirection();
 //await Seed(new Uri("http://localhost:2292/graphql"));
 app.Run();
 
-static async Task CreateRouteInProviderOne(Uri uri, string startPointName, string endPointName, DateTime startTime, DateTime arrivalTime, TimeSpan timeToLive, int cost)
+static async Task CreateRouteInProvider(Uri uri, string startPointName, string endPointName, DateTime startTime, DateTime arrivalTime, TimeSpan timeToLive, int cost)
 {
     using var httpClient = new HttpClient() { BaseAddress = uri };
     using var client = new ProviderOneZeroQLClient(httpClient);
@@ -34,7 +34,7 @@ static async Task CreateRouteInProviderOne(Uri uri, string startPointName, strin
     var at = arrivalTime;
     var ttl = timeToLive;
     var c = cost;
-    var response = await client.Mutation(o => o.AddTravelRoute<TravelRoute>(
+    ZeroQL.GraphQLResult<TravelRoute> response = await client.Mutation(o => o.AddTravelRoute<TravelRoute>(
         startPointName: startPointName,
         endPointName: endPointName,
         startDateTimeUTC: st,
@@ -44,7 +44,7 @@ static async Task CreateRouteInProviderOne(Uri uri, string startPointName, strin
         p => new TravelRoute() { Id = p.Id }));
 }
 
-static async Task Seed(Uri uri)
+static async Task Seed(Uri providerURI)
 {
     Console.WriteLine("Seeding started: Provider One");
     for (int i = 0; i < 3000; i++)
@@ -58,7 +58,7 @@ static async Task Seed(Uri uri)
         var endd = faker.Date.Between(sd, sd.AddYears(1));
         var ttl = faker.Date.Timespan();
         var cost = faker.Random.Number(500);
-        await CreateRouteInProviderOne(uri,stpn, epn, sd, arrt, ttl, cost);
+        await CreateRouteInProvider(providerURI,stpn, epn, sd, arrt, ttl, cost);
         Console.WriteLine("Seed entry send");
     }
     Console.WriteLine("Seed Provider One Complete");

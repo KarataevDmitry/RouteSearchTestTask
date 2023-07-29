@@ -20,7 +20,7 @@ namespace TaskSolution.API.Providers.AggregateSearch
              UseFiltering,
              UseSorting
         ]
-        public IQueryable<DAL.Models.TravelRoute> GetTravelRoutes([Service] InMemoryDbContext context)
+        public async Task< IQueryable<DAL.Models.TravelRoute>> GetTravelRoutes([Service] InMemoryDbContext context)
         {
             if (context.TravelRoutes.Any())
             {
@@ -30,7 +30,7 @@ namespace TaskSolution.API.Providers.AggregateSearch
             using var httpClientProviderOne = new HttpClient() {BaseAddress = new Uri("http://localhost:4883") }
             using var providerOneClient = new ProviderClient(httpClientProviderOne);
             using var providerTwoClient = new ProviderClient(httpClientProviderTwo);
-            var provider1qres = providerOneClient.Query(o => o.TravelRoutes(selector: s => new DAL.Models.TravelRoute() { Id = s.Id, StartDateTimeUTC = s.StartDateTimeUTC, ArrivalDateTimeUTC = s.ArrivalDateTimeUTC, Cost = s.Cost, EndPoint = s.EndPoint, StartPoint = s.StartPoint, TimeToLive = s.TimeToLive }))
+            var provider1qres = await providerOneClient.Query(o => o.TravelRoutes(selector: s => new DAL.Models.TravelRoute() { Id = s.Id, StartDateTimeUTC = s.StartDateTimeUTC, ArrivalDateTimeUTC = s.ArrivalDateTimeUTC, Cost = s.Cost, EndPoint = s.EndPoint, StartPoint = s.StartPoint, TimeToLive = s.TimeToLive }));
             
         }
     }
