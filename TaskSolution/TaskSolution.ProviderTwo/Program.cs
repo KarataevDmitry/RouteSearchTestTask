@@ -18,7 +18,6 @@ builder.Services.AddApiVersioning(opt => {
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<ITravelRouteRepository, TravelRouteRepository>();
-builder.Services.AddScoped<ITravelPointRepository, TravelPointRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(
     options =>
     options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
@@ -38,6 +37,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGraphQL("/graphql");
+app.MapGet("/ping", () => Results.Ok());
 app.Run();
 
 /// <summary>

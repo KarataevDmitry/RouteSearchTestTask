@@ -3,6 +3,8 @@ using Asp.Versioning;
 
 using Microsoft.EntityFrameworkCore;
 
+using System.Reflection.Metadata.Ecma335;
+
 using TaskSolution.DAL.Data;
 using TaskSolution.DAL.Interfaces;
 using TaskSolution.DAL.Repositories;
@@ -18,8 +20,8 @@ builder.Services.AddApiVersioning(opt => {
 });
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<ITravelRouteRepository, TravelRouteRepository>();
-builder.Services.AddScoped<ITravelPointRepository, TravelPointRepository>();
+//builder.Services.AddScoped<ITravelRouteRepository, TravelRouteRepository>();
+//builder.Services.AddScoped<ITravelPointRepository, TravelRouteRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => 
     options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
@@ -39,6 +41,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGraphQL("/graphql");
+app.MapGet("/ping", () => Results.Ok());
 app.Run();
 
 /// <summary>
