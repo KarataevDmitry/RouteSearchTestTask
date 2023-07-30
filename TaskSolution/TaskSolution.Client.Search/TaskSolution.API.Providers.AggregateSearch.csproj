@@ -31,4 +31,8 @@
     <ProjectReference Include="..\TaskSolution.ProviderTwo\TaskSolution.API.Providers.ProviderTwo.csproj" />
   </ItemGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="cd $(TargetDir)&#xD;&#xA;cd ..&#xD;&#xA;cd ..&#xD;&#xA;cd ..&#xD;&#xA;cd obj&#xD;&#xA;cd ZeroQL&#xD;&#xA;del config.zeroql.json.g.cs&#xD;&#xA;cd bin&#xD;&#xA;cd Debug&#xD;&#xA;cd net7.0&#xD;&#xA;del config.zeroql.json.g.cs" />
+  </Target>
+
 </Project>
