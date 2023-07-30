@@ -15,29 +15,27 @@ using TaskSolution.DAL.Models;
 
 namespace TaskSolution.DAL.Repositories
 {
-    public class TravelRouteRepository: ITravelRouteRepository 
+    public class TravelRouteRepository : ITravelRouteRepository
     {
         private readonly InMemoryDbContext db;
         private readonly IMemoryCache _cache;
-        MemoryCacheEntryOptions cacheOptions = new MemoryCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-        };
+        MemoryCacheOptions cacheOptions = new MemoryCacheOptions() { SizeLimit = 10 };
 
         public TravelRouteRepository(InMemoryDbContext context, IMemoryCache cache)
         {
-                db = context;
-                _cache = cache;
+            db = context;
+            _cache = cache;
         }
 
         public async Task AddTravelRouteAsync(TravelRoute route)
         {
-           db.TravelRoutes.Add(route);
+          
+            db.TravelRoutes.Add(route);
             var n = await db.SaveChangesAsync();
             if (n > 0)
             {
-         
-                TravelRoute travelRoute = _cache.Set(route.Id, route, cacheOptions);
+
+                TravelRoute travelRoute = _cache.Set(route.Id, route, TimeSpan.FromSeconds(60));
             }
         }
 
@@ -57,9 +55,13 @@ namespace TaskSolution.DAL.Repositories
             {
                 return null;
             }
-           _cache.Set(route.Id, route,cacheOptions);
-
-            
+            _cache.Set(route.Id, route, TimeSpan.FromSeconds(60));
             return route;
         }
+
+        public async Task<IEnumerable<TravelRoute>> GetGetTravelRoutesAsync()
+        {
+            return await db.TravelRoutes.ToListAsync();
+        }
     }
+}

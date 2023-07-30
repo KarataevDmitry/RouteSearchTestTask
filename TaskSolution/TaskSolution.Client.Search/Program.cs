@@ -2,6 +2,7 @@ using Asp.Versioning;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 
 using TaskSolution.API.Providers.AggregateSearch;
@@ -20,24 +21,20 @@ builder.Services.AddApiVersioning(opt => {
 });
 builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<ITravelRouteRepository, TravelRouteRepository>();
-builder.Services.AddScoped<MemoryCache>
-var cacheOptions = new MemoryCacheOptions()
-{
-    ExpirationScanFrequency = TimeSpan.FromSeconds(60),
-    SizeLimit = 200
-};
-var memCache = new MemoryCache(cacheOptions);
-builder.Services.AddDbContext<InMemoryDbContext>(
+builder.Services.AddDbContext<ApplicationDbContext>(
     options =>
-    options.UseMemoryCache(memCache));
+    options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
+//builder.Services.AddScoped<ITravelRouteRepository, TravelRouteRepository>();
+MemoryCacheOptions mo = new MemoryCacheOptions() { SizeLimit = 10 };
+MemoryCache memCache = new MemoryCache(mo);
+//builder.Services.AddDbContext<InMemoryDbContext>(options => options.UseMemoryCache(memCache));
 builder.Services.AddGraphQLServer()
     .AddQueryType<QueryCached>()
     .AddProjections()
     .AddFiltering()
-    .AddSorting()
-    .UseDocumentCache()
-    .UseOperationCache();
+    .AddSorting();
+    //.UseDocumentCache()
+    //.AddDiagnosticEventListener<MyCacheEventListener>();
 builder.WebHost.UseUrls("http://localhost:7777");
 var app = builder.Build();
 

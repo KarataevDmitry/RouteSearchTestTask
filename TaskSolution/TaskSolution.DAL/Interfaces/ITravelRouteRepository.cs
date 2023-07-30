@@ -14,7 +14,7 @@ namespace TaskSolution.DAL.Interfaces
     {
         Task AddTravelRouteAsync(TravelRoute route);
         Task<TravelRoute?> GetTravelRouteAsync(Guid id);
-        IEnumerable<TravelRoute> GetAllTravelRoutes();
-        void DeleteTravelRoute(Guid id);
+        Task<IEnumerable<TravelRoute>> GetAllTravelRoutes();
+       // void DeleteTravelRoute(Guid id);
     }
 }

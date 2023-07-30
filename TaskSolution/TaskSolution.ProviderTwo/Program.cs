@@ -22,7 +22,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     options =>
     options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
 builder.Services.AddGraphQLServer()
-    .AddQueryType<Query>().AddProjections().AddFiltering().AddSorting()
+    .AddQueryType<Query>().AddProjections().AddFiltering().AddSorting().UseDocumentCache()
     .AddMutationType<Mutation>();
 builder.WebHost.UseUrls("http://localhost:2292");
 var app = builder.Build();
