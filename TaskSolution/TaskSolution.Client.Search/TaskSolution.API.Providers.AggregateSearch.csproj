@@ -21,7 +21,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="ZeroQL" Version="6.0.0" />
   </ItemGroup>
 
@@ -32,7 +35,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="cd $(TargetDir)&#xD;&#xA;cd ..&#xD;&#xA;cd ..&#xD;&#xA;cd ..&#xD;&#xA;cd obj&#xD;&#xA;cd ZeroQL&#xD;&#xA;del config.zeroql.json.g.cs&#xD;&#xA;cd bin&#xD;&#xA;cd Debug&#xD;&#xA;cd net7.0&#xD;&#xA;del config.zeroql.json.g.cs" />
+    <Exec Command="cd $(TargetDir)&#xD;&#xA;cd ..&#xD;&#xA;cd ..&#xD;&#xA;cd ..&#xD;&#xA;cd obj&#xD;&#xA;cd ZeroQL&#xD;&#xA;del config.zeroql.json.g.cs&#xD;&#xA;" />
   </Target>
 
 </Project>

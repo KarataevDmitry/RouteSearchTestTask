@@ -5,6 +5,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 
+using ProviderOneReader;
+
 using TaskSolution.API.Providers.AggregateSearch;
 using TaskSolution.DAL.Data;
 using TaskSolution.DAL.Interfaces;
@@ -28,8 +30,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(
 MemoryCacheOptions mo = new MemoryCacheOptions() { SizeLimit = 10 };
 MemoryCache memCache = new MemoryCache(mo);
 //builder.Services.AddDbContext<InMemoryDbContext>(options => options.UseMemoryCache(memCache));
+builder.Services.AddHttpClient<ProviderOneClient>();
 builder.Services.AddGraphQLServer()
-    .AddQueryType<QueryCached>()
+    .AddQueryType<QueryRest>()
     .AddProjections()
     .AddFiltering()
     .AddSorting();
@@ -44,8 +47,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.MapGraphQL("/graphql");
 app.Run();
