@@ -1,6 +1,5 @@
 ﻿using HotChocolate;
 
-using ProviderOneReader;
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 using TaskSolution.DAL.Data;
 using TaskSolution.DAL.Models;
 
-using ZeroQL;
+using TaskSolution.API.Providers.AggregateSearch.ZeroQLClient;
 
 namespace TaskSolution.API.Providers.AggregateSearch
 {
@@ -21,10 +20,12 @@ namespace TaskSolution.API.Providers.AggregateSearch
              UseFiltering,
              UseSorting
         ]
-        public async Task<ICollection<ProviderOneReader.TravelRoute>> GetTravelRoutes([Service] ProviderOneClient provOne, CancellationToken cancellationToken)
+        public async Task<ICollection<ZeroQLClient.TravelRoute>> GetTravelRoutes()
         {
-            var r = await provOne.GetAllAsync(cancellationToken);
-            return r;
+            using var httpClient = new HttpClient() {BaseAddress = new Uri("http://localhost:4883")};
+            var provOne = new ProviderClient(httpClient);
+            var r = await provOne.Query(q => q.TravelRoutes(null, null,p => p.Id));
+            return r.Data.Cast<ZeroQLClient.TravelRoute>().ToList();
         }
     }
 }

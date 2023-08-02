@@ -25,7 +25,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="ZeroQL" Version="6.0.0" />
+    <PackageReference Include="ZeroQL" Version="4.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,8 +34,8 @@
     <ProjectReference Include="..\TaskSolution.ProviderTwo\TaskSolution.API.Providers.ProviderTwo.csproj" />
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+  <!--<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="cd $(TargetDir)&#xD;&#xA;cd ..&#xD;&#xA;cd ..&#xD;&#xA;cd ..&#xD;&#xA;cd obj&#xD;&#xA;cd ZeroQL&#xD;&#xA;del config.zeroql.json.g.cs&#xD;&#xA;" />
-  </Target>
+  </Target>-->
 
 </Project>
