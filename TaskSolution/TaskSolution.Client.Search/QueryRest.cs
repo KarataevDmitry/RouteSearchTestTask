@@ -24,8 +24,9 @@ namespace TaskSolution.API.Providers.AggregateSearch
         {
             using var httpClient = new HttpClient() {BaseAddress = new Uri("http://localhost:4883")};
             var provOne = new ProviderClient(httpClient);
-            var r = await provOne.Query(q => q.TravelRoutes(null, null,p => p.Id));
-            return r.Data.Cast<ZeroQLClient.TravelRoute>().ToList();
+             var r = await provOne.Query(q => q.TravelRoutes(null, null, p =>p));
+            //return r.Data.Cast<ZeroQLClient.TravelRoute>().ToList();
+            return new[] { new ZeroQLClient.TravelRoute() };
         }
     }
 }
