@@ -13,7 +13,6 @@ namespace TaskSolution.DAL.Models
         [Key]
         public Guid Id { get; set; }
         public string StartPoint { get; set; }
-        
         public string EndPoint { get; set; }
         //public ICollection<TravelPoint> RoutePoints { get; set; }
         public DateTime StartDateTimeUTC { get; set; }
