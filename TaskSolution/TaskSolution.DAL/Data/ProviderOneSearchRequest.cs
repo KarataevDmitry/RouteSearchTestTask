@@ -2,7 +2,7 @@
 
 namespace TaskSolution.DAL.Data;
 
-public class QueryParameters
+public class ProviderOneSearchRequest
 {
     //public static bool TryParse(string query, out QueryParameters parameters)
     //{
@@ -14,12 +14,12 @@ public class QueryParameters
             
     //}
     public bool? FromCache { get; set; }
-    public DateTime? MinStartDateTimeUTC { get; set; } =new  DateTime(1,1,1).ToUniversalTime();
-    public DateTime? MaxStartDateTimeUTC { get; set; } = new DateTime(9999, 12, 31).ToUniversalTime();
-    public DateTime? MinArrivalDateTimeUTC { get; set; } = new DateTime(1, 1, 1).ToUniversalTime();
-    public DateTime? MaxArrivalDateTimeUTC { get; set; } = new DateTime(9999, 12, 31).ToUniversalTime();
-    public decimal? MinCost { get; set; } = decimal.MinValue;
-    public decimal? MaxCost { get; set; } = decimal.MaxValue;
+    public DateTime? MinStartDateTimeUTC { get; set; } 
+    public DateTime? MaxStartDateTimeUTC { get; set; } 
+    public DateTime? MinArrivalDateTimeUTC { get; set; }
+    public DateTime? MaxArrivalDateTimeUTC { get; set; }
+    public decimal? MinCost { get; set; }
+    public decimal? MaxCost { get; set; } 
     public string? EndPointStartsWith { get; set; } = null;
     public string? EndPointEndsWith { get; set; } = null;
     public string? EndPointContains { get; set; } = null;

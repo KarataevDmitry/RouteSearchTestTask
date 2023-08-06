@@ -16,6 +16,9 @@ using TaskSolution.DAL.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+
+builder.Services.AddOutputCache(options => options.SizeLimit = 3000);
+builder.Services.AddHealthChecks();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -25,53 +28,31 @@ builder.Services.AddEndpointsApiExplorer();
 //});
 builder.Services.AddSwaggerGen().AddSwaggerGenNewtonsoftSupport();
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddScoped<ITravelRouteRepository, TravelRouteRepository>();
-//builder.Services.AddScoped<ITravelPointRepository, TravelRouteRepository>();
+
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => 
     options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
-builder.Services.AddGraphQLServer()
-    .AddQueryType<Query>().AddProjections().AddFiltering().AddSorting()
-    .AddMutationType<Mutation>();
 builder.WebHost.UseUrls("http://localhost:4883");
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
     app.UseSwagger();
     app.UseSwaggerUI();
 
-app.MapGraphQL("/graphql");
+app.UseHealthChecks("/ping");
+
 app.MapGet("/TravelRoutes/getAll", async (ApplicationDbContext context) => await context.TravelRoutes.ToListAsync());
 app.MapGet("/search", async (ApplicationDbContext context,
-                       [AsParameters] QueryParameters queryParameters) =>
+                       [AsParameters] ProviderOneSearchRequest queryParameters) =>
 {
-    queryParameters.MinStartDateTimeUTC = queryParameters.MinStartDateTimeUTC.HasValue? queryParameters.MinStartDateTimeUTC : new DateTime(1, 1, 1).ToUniversalTime();
-    queryParameters.MaxStartDateTimeUTC = queryParameters.MaxStartDateTimeUTC.HasValue ? queryParameters.MaxStartDateTimeUTC : new DateTime(9999, 12, 31).ToUniversalTime();
-    queryParameters.MinArrivalDateTimeUTC = queryParameters.MinArrivalDateTimeUTC.HasValue ? queryParameters.MinArrivalDateTimeUTC : new DateTime(1, 1, 1).ToUniversalTime();
-    queryParameters.MaxArrivalDateTimeUTC = queryParameters.MaxArrivalDateTimeUTC.HasValue ? queryParameters.MaxArrivalDateTimeUTC : new DateTime(9999, 12, 31).ToUniversalTime();
-   
-    queryParameters.MaxCost = queryParameters.MaxCost.HasValue ? queryParameters.MaxCost : decimal.MaxValue;
-    queryParameters.MinCost = queryParameters.MinCost.HasValue ? queryParameters.MinCost : decimal.MinValue;
-    
-    queryParameters.EndPointStartsWith = queryParameters.EndPointStartsWith is null ? string.Empty : queryParameters.EndPointStartsWith;
-    queryParameters.StartPointStartsWith = queryParameters.StartPointStartsWith is null ? string.Empty : queryParameters.StartPointStartsWith;
-   
-    queryParameters.EndPointEndsWith = queryParameters.EndPointEndsWith is null ? string.Empty : queryParameters.EndPointEndsWith;
-    queryParameters.StartPointEndsWith = queryParameters.StartPointEndsWith is null ? string.Empty : queryParameters.StartPointEndsWith;
-
-    queryParameters.EndPointContains = queryParameters.EndPointContains is null ? string.Empty : queryParameters.EndPointContains;
-    queryParameters.StartPointContains = queryParameters.StartPointContains is null ? string.Empty : queryParameters.StartPointContains;
-
-
-
-
-
+    SetSearchRequestValues(queryParameters);
 
     IQueryable<TravelRoute> res = ApplyFiltersToContextData(context, queryParameters);
-        Debug.WriteLine($"resulting query string: {res.ToQueryString()}");
-        return await res.ToListAsync();
+    Debug.WriteLine($"resulting query string: {res.ToQueryString()}");
+    return await res.ToListAsync();
 
-    static IQueryable<TravelRoute> ApplyStartPointContainsFilter(QueryParameters queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
+    static IQueryable<TravelRoute> ApplyStartPointContainsFilter(ProviderOneSearchRequest queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
     {
         Debug.WriteLine("Interval filters applied");
         Debug.WriteLine("Start point contains entry");
@@ -84,7 +65,7 @@ app.MapGet("/search", async (ApplicationDbContext context,
         return ApplyStartPointEndsWithFilter(queryParameters, res.Where(x => x.StartPoint.Contains(queryParameters.StartPointContains)));
     }
 
-    static IQueryable<TravelRoute> ApplyEndPointContainsFilter(QueryParameters queryParameters, IQueryable<TravelRoute> res)
+    static IQueryable<TravelRoute> ApplyEndPointContainsFilter(ProviderOneSearchRequest queryParameters, IQueryable<TravelRoute> res)
     {
         if (string.IsNullOrEmpty(queryParameters.EndPointContains))
         {
@@ -92,10 +73,10 @@ app.MapGet("/search", async (ApplicationDbContext context,
             return ApplyEndPointEndsWithFilter(queryParameters, res);
         }
         Debug.WriteLine(" ep cont applied, next: ep ew");
-        return ApplyEndPointEndsWithFilter( queryParameters, res.Where(x => x.EndPoint.Contains(queryParameters.EndPointContains)));
+        return ApplyEndPointEndsWithFilter(queryParameters, res.Where(x => x.EndPoint.Contains(queryParameters.EndPointContains)));
     }
 
-    static IQueryable<TravelRoute> ApplyEndPointStartsWithFilter(QueryParameters queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
+    static IQueryable<TravelRoute> ApplyEndPointStartsWithFilter(ProviderOneSearchRequest queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
     {
         if (string.IsNullOrEmpty(queryParameters.EndPointStartsWith))
         {
@@ -106,7 +87,7 @@ app.MapGet("/search", async (ApplicationDbContext context,
         return res.Where(x => x.EndPoint.StartsWith(queryParameters.EndPointStartsWith));
     }
 
-    static IQueryable<TravelRoute> ApplyStartPointStartsWithFilter(QueryParameters queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
+    static IQueryable<TravelRoute> ApplyStartPointStartsWithFilter(ProviderOneSearchRequest queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
     {
         if (string.IsNullOrEmpty(queryParameters.StartPointStartsWith))
         {
@@ -117,30 +98,30 @@ app.MapGet("/search", async (ApplicationDbContext context,
         return ApplyEndPointContainsFilter(queryParameters, res.Where(x => x.StartPoint.StartsWith(queryParameters.StartPointStartsWith)));
     }
 
-    static IQueryable<TravelRoute> ApplyEndPointEndsWithFilter(QueryParameters queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
+    static IQueryable<TravelRoute> ApplyEndPointEndsWithFilter(ProviderOneSearchRequest queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
     {
         if (string.IsNullOrEmpty(queryParameters.EndPointEndsWith))
         {
             Debug.WriteLine("no ep ew, next: ep sw");
-            return ApplyEndPointStartsWithFilter(queryParameters,  res.Where(x => x.EndPoint.EndsWith(queryParameters.EndPointEndsWith!)));
+            return ApplyEndPointStartsWithFilter(queryParameters, res.Where(x => x.EndPoint.EndsWith(queryParameters.EndPointEndsWith!)));
         }
         Debug.WriteLine(" ep ew applied, next: ep sw");
         return ApplyEndPointStartsWithFilter(queryParameters, res.Where(x => x.EndPoint.EndsWith(queryParameters.EndPointEndsWith!)));
     }
 
-    static IQueryable<TravelRoute> ApplyStartPointEndsWithFilter(QueryParameters queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
+    static IQueryable<TravelRoute> ApplyStartPointEndsWithFilter(ProviderOneSearchRequest queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
     {
         if (string.IsNullOrEmpty(queryParameters.StartPointEndsWith))
         {
             Debug.WriteLine("No sp ew next: sp sw");
-            return ApplyStartPointStartsWithFilter (queryParameters, res);
+            return ApplyStartPointStartsWithFilter(queryParameters, res);
         }
         Debug.WriteLine(" sp ew applied, next: sp sw");
         return ApplyStartPointStartsWithFilter(queryParameters, res.Where(x => x.StartPoint.EndsWith(queryParameters.StartPointEndsWith)));
-        
+
     }
 
-    static IQueryable<TravelRoute> ApplyIntervalConditionsFilter(QueryParameters queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
+    static IQueryable<TravelRoute> ApplyIntervalConditionsFilter(ProviderOneSearchRequest queryParameters, IQueryable<TaskSolution.DAL.Models.TravelRoute> res)
     {
         Debug.WriteLine("Interval filters entry");
         var resWithCostFilter = res.Where(x =>
@@ -152,19 +133,37 @@ app.MapGet("/search", async (ApplicationDbContext context,
         var resWithADTFilter = resWithCostStartDateFilter.Where(x =>
            x.ArrivalDateTimeUTC >= queryParameters.MinArrivalDateTimeUTC
         && x.ArrivalDateTimeUTC <= queryParameters.MaxStartDateTimeUTC);
-        return ApplyStartPointContainsFilter(queryParameters,  resWithADTFilter);
-      
+        return ApplyStartPointContainsFilter(queryParameters, resWithADTFilter);
+
     }
 
-    static IQueryable<TaskSolution.DAL.Models.TravelRoute> ApplyFiltersToContextData(ApplicationDbContext context, QueryParameters queryParameters)
+    static IQueryable<TaskSolution.DAL.Models.TravelRoute> ApplyFiltersToContextData(ApplicationDbContext context, ProviderOneSearchRequest queryParameters)
     {
         var res = context.TravelRoutes;
 
-        return ApplyIntervalConditionsFilter(queryParameters, res); 
+        return ApplyIntervalConditionsFilter(queryParameters, res);
     }
 
+    static void SetSearchRequestValues(ProviderOneSearchRequest searchRequest)
+    {
+        searchRequest.MinStartDateTimeUTC = searchRequest.MinStartDateTimeUTC.HasValue ? searchRequest.MinStartDateTimeUTC : new DateTime(1, 1, 1).ToUniversalTime();
+        searchRequest.MaxStartDateTimeUTC = searchRequest.MaxStartDateTimeUTC.HasValue ? searchRequest.MaxStartDateTimeUTC : new DateTime(9999, 12, 31).ToUniversalTime();
+        searchRequest.MinArrivalDateTimeUTC = searchRequest.MinArrivalDateTimeUTC.HasValue ? searchRequest.MinArrivalDateTimeUTC : new DateTime(1, 1, 1).ToUniversalTime();
+        searchRequest.MaxArrivalDateTimeUTC = searchRequest.MaxArrivalDateTimeUTC.HasValue ? searchRequest.MaxArrivalDateTimeUTC : new DateTime(9999, 12, 31).ToUniversalTime();
+
+        searchRequest.MaxCost = searchRequest.MaxCost.HasValue ? searchRequest.MaxCost : decimal.MaxValue;
+        searchRequest.MinCost = searchRequest.MinCost.HasValue ? searchRequest.MinCost : decimal.MinValue;
+
+        searchRequest.EndPointStartsWith = searchRequest.EndPointStartsWith is null ? string.Empty : searchRequest.EndPointStartsWith;
+        searchRequest.StartPointStartsWith = searchRequest.StartPointStartsWith is null ? string.Empty : searchRequest.StartPointStartsWith;
+
+        searchRequest.EndPointEndsWith = searchRequest.EndPointEndsWith is null ? string.Empty : searchRequest.EndPointEndsWith;
+        searchRequest.StartPointEndsWith = searchRequest.StartPointEndsWith is null ? string.Empty : searchRequest.StartPointEndsWith;
+
+        searchRequest.EndPointContains = searchRequest.EndPointContains is null ? string.Empty : searchRequest.EndPointContains;
+        searchRequest.StartPointContains = searchRequest.StartPointContains is null ? string.Empty : searchRequest.StartPointContains;
+    }
 }).CacheOutput();
-app.MapGet("/ping", () => Results.Ok());
 app.Run();
 
 /// <summary>
