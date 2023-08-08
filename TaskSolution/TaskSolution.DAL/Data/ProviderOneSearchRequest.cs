@@ -4,16 +4,6 @@ namespace TaskSolution.DAL.Data;
 
 public class ProviderOneSearchRequest
 {
-    //public static bool TryParse(string query, out QueryParameters parameters)
-    //{
-    //    Debugger.Break();
-    //    var splitted = query.Split('=');
-
-    //    parameters = new QueryParameters();
-    //    return true;
-            
-    //}
-    public bool? FromCache { get; set; }
     public DateTime? MinStartDateTimeUTC { get; set; } 
     public DateTime? MaxStartDateTimeUTC { get; set; } 
     public DateTime? MinArrivalDateTimeUTC { get; set; }
